@@ -12,12 +12,15 @@ import { SettlementsModule } from './api/v1/settlements/settlements.module';
 import { BillsModule } from './api/v1/bills/bills.module';
 import { RulesModule } from './api/v1/rules/rules.module';
 import { RuleAttorneysMappingModule } from './api/v1/rule-attorneys-mapping/rule-attorneys-mapping.module';
+import { UsersModule } from './api/v1/users/users.module';
+import { RolesModule } from './api/v1/roles/roles.module';
+
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
     envFilePath: '.env'
-  }), DatabaseModule, AuthModule, PatientModule, DoctorModule, AttorniesModule, SettlementsModule, BillsModule, RulesModule, RuleAttorneysMappingModule],
+  }), DatabaseModule, AuthModule, PatientModule, DoctorModule, AttorniesModule, SettlementsModule, BillsModule, RulesModule, RuleAttorneysMappingModule, UsersModule, RolesModule],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
 })

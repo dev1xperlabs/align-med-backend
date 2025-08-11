@@ -104,7 +104,7 @@ export class BaseRepository<T = any> {
   }
 
   async update(
-    id: string | number,
+    id: string | number | undefined,
     data: Partial<T>,
     returning: string[] = ['*'],
   ): Promise<T | null> {
