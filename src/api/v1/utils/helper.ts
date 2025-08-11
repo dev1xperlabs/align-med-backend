@@ -37,13 +37,12 @@ export function transformPatientCounts(rawData: any[], useRevenue = false): Reco
     const resultMap: Record<string, any> = {};
     const allLocations = new Set<string>();
 
-    console.log('rawData', rawData);
     for (const row of rawData) {
         const date = row.visit_date || "Unknown Date";
         const locationName = row.location_name || "Unknown Location";
 
         const value = useRevenue
-            ? parseFloat(row.total_revenue || 0)
+            ? `$${parseFloat(row.total_revenue || 0)}`
             : parseInt(row.patient_count || 0, 10);
 
         if (!resultMap[date]) {

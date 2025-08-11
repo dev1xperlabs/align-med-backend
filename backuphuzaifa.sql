@@ -80,7 +80,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_attorney_bonus_summary(p_from_date date, p_to_date date, p_rule_id integer) OWNER TO postgres;
+ALTER FUNCTION public.get_attorney_bonus_summary(p_from_date date, p_to_date date, p_rule_id integer) OWNER TO neondb_owner;
 
 --
 -- TOC entry 242 (class 1255 OID 33177)
@@ -103,7 +103,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_billing_summary() OWNER TO postgres;
+ALTER FUNCTION public.get_billing_summary() OWNER TO neondb_owner;
 
 --
 -- TOC entry 256 (class 1255 OID 33002)
@@ -133,7 +133,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_count_of_new_patients_by_location(p_location_ids bigint[], p_page_size integer, p_page_number integer, p_start_date date, p_end_date date) OWNER TO postgres;
+ALTER FUNCTION public.get_count_of_new_patients_by_location(p_location_ids bigint[], p_page_size integer, p_page_number integer, p_start_date date, p_end_date date) OWNER TO neondb_owner;
 
 --
 -- TOC entry 255 (class 1255 OID 33179)
@@ -171,7 +171,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_count_of_patients_by_attorney(p_attorney_ids bigint[], p_page_size integer, p_page_number integer, p_start_date date, p_end_date date) OWNER TO postgres;
+ALTER FUNCTION public.get_count_of_patients_by_attorney(p_attorney_ids bigint[], p_page_size integer, p_page_number integer, p_start_date date, p_end_date date) OWNER TO neondb_owner;
 
 --
 -- TOC entry 241 (class 1255 OID 33176)
@@ -194,7 +194,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_new_patient_summary() OWNER TO postgres;
+ALTER FUNCTION public.get_new_patient_summary() OWNER TO neondb_owner;
 
 --
 -- TOC entry 257 (class 1255 OID 33183)
@@ -239,7 +239,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_settlement_summary_grouped(p_group_by text, p_page_size integer, p_page_number integer) OWNER TO postgres;
+ALTER FUNCTION public.get_settlement_summary_grouped(p_group_by text, p_page_size integer, p_page_number integer) OWNER TO neondb_owner;
 
 --
 -- TOC entry 261 (class 1255 OID 49372)
@@ -290,7 +290,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_settlement_summary_grouped_by_attorneys(p_attorney_ids bigint[], p_group_by text, p_page_size integer, p_page_number integer) OWNER TO postgres;
+ALTER FUNCTION public.get_settlement_summary_grouped_by_attorneys(p_attorney_ids bigint[], p_group_by text, p_page_size integer, p_page_number integer) OWNER TO neondb_owner;
 
 --
 -- TOC entry 243 (class 1255 OID 33187)
@@ -313,7 +313,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_settlements_billing() OWNER TO postgres;
+ALTER FUNCTION public.get_settlements_billing() OWNER TO neondb_owner;
 
 --
 -- TOC entry 259 (class 1255 OID 33186)
@@ -345,7 +345,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_sum_of_billed_charges_by_attorney(p_attorney_ids bigint[], p_page_size integer, p_page_number integer, p_start_date date, p_end_date date) OWNER TO postgres;
+ALTER FUNCTION public.get_sum_of_billed_charges_by_attorney(p_attorney_ids bigint[], p_page_size integer, p_page_number integer, p_start_date date, p_end_date date) OWNER TO neondb_owner;
 
 --
 -- TOC entry 258 (class 1255 OID 33185)
@@ -386,7 +386,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.get_total_revenue_by_location(p_location_ids bigint[], p_page_size integer, p_page_number integer, p_start_date date, p_end_date date) OWNER TO postgres;
+ALTER FUNCTION public.get_total_revenue_by_location(p_location_ids bigint[], p_page_size integer, p_page_number integer, p_start_date date, p_end_date date) OWNER TO neondb_owner;
 
 SET default_tablespace = '';
 
@@ -407,7 +407,7 @@ CREATE TABLE public.attornies (
 );
 
 
-ALTER TABLE public.attornies OWNER TO postgres;
+ALTER TABLE public.attornies OWNER TO neondb_owner;
 
 --
 -- TOC entry 218 (class 1259 OID 33007)
@@ -423,7 +423,7 @@ CREATE SEQUENCE public.attornies_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.attornies_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.attornies_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4954 (class 0 OID 0)
@@ -455,7 +455,7 @@ CREATE TABLE public.bills (
 );
 
 
-ALTER TABLE public.bills OWNER TO postgres;
+ALTER TABLE public.bills OWNER TO neondb_owner;
 
 --
 -- TOC entry 220 (class 1259 OID 33014)
@@ -470,7 +470,7 @@ CREATE SEQUENCE public.bills_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.bills_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.bills_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4955 (class 0 OID 0)
@@ -495,7 +495,7 @@ CREATE TABLE public.locations (
 );
 
 
-ALTER TABLE public.locations OWNER TO postgres;
+ALTER TABLE public.locations OWNER TO neondb_owner;
 
 --
 -- TOC entry 222 (class 1259 OID 33019)
@@ -511,7 +511,7 @@ CREATE SEQUENCE public.locations_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.locations_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.locations_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4956 (class 0 OID 0)
@@ -538,7 +538,7 @@ CREATE TABLE public.patient_attorny_log (
 );
 
 
-ALTER TABLE public.patient_attorny_log OWNER TO postgres;
+ALTER TABLE public.patient_attorny_log OWNER TO neondb_owner;
 
 --
 -- TOC entry 224 (class 1259 OID 33025)
@@ -553,7 +553,7 @@ CREATE SEQUENCE public.patient_attorny_log_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.patient_attorny_log_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.patient_attorny_log_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4957 (class 0 OID 0)
@@ -579,7 +579,7 @@ CREATE TABLE public.patient_location_log (
 );
 
 
-ALTER TABLE public.patient_location_log OWNER TO postgres;
+ALTER TABLE public.patient_location_log OWNER TO neondb_owner;
 
 --
 -- TOC entry 226 (class 1259 OID 33031)
@@ -594,7 +594,7 @@ CREATE SEQUENCE public.patient_location_log_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.patient_location_log_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.patient_location_log_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4958 (class 0 OID 0)
@@ -626,7 +626,7 @@ CREATE TABLE public.patients (
 );
 
 
-ALTER TABLE public.patients OWNER TO postgres;
+ALTER TABLE public.patients OWNER TO neondb_owner;
 
 --
 -- TOC entry 228 (class 1259 OID 33038)
@@ -642,7 +642,7 @@ CREATE SEQUENCE public.patients_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.patients_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.patients_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4959 (class 0 OID 0)
@@ -667,7 +667,7 @@ CREATE TABLE public.providers (
 );
 
 
-ALTER TABLE public.providers OWNER TO postgres;
+ALTER TABLE public.providers OWNER TO neondb_owner;
 
 --
 -- TOC entry 230 (class 1259 OID 33043)
@@ -683,7 +683,7 @@ CREATE SEQUENCE public.providers_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.providers_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.providers_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4960 (class 0 OID 0)
@@ -708,7 +708,7 @@ CREATE TABLE public.refresh_tokens (
 );
 
 
-ALTER TABLE public.refresh_tokens OWNER TO postgres;
+ALTER TABLE public.refresh_tokens OWNER TO neondb_owner;
 
 --
 -- TOC entry 232 (class 1259 OID 33048)
@@ -739,7 +739,7 @@ CREATE TABLE public.rule_attorneys_mapping (
 );
 
 
-ALTER TABLE public.rule_attorneys_mapping OWNER TO postgres;
+ALTER TABLE public.rule_attorneys_mapping OWNER TO neondb_owner;
 
 --
 -- TOC entry 239 (class 1259 OID 41227)
@@ -755,7 +755,7 @@ CREATE SEQUENCE public.rule_attorneys_mapping_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.rule_attorneys_mapping_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.rule_attorneys_mapping_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4961 (class 0 OID 0)
@@ -782,7 +782,7 @@ CREATE TABLE public.rules (
 );
 
 
-ALTER TABLE public.rules OWNER TO postgres;
+ALTER TABLE public.rules OWNER TO neondb_owner;
 
 --
 -- TOC entry 234 (class 1259 OID 33053)
@@ -798,7 +798,7 @@ CREATE SEQUENCE public.rules_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.rules_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.rules_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4962 (class 0 OID 0)
@@ -828,7 +828,7 @@ CREATE TABLE public.settlements (
 );
 
 
-ALTER TABLE public.settlements OWNER TO postgres;
+ALTER TABLE public.settlements OWNER TO neondb_owner;
 
 --
 -- TOC entry 236 (class 1259 OID 33058)
@@ -844,7 +844,7 @@ CREATE SEQUENCE public.selttlements_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.selttlements_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.selttlements_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4963 (class 0 OID 0)
@@ -873,7 +873,7 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO postgres;
+ALTER TABLE public.users OWNER TO neondb_owner;
 
 --
 -- TOC entry 238 (class 1259 OID 33067)
@@ -889,7 +889,7 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.users_id_seq OWNER TO neondb_owner;
 
 --
 -- TOC entry 4964 (class 0 OID 0)

@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private pool: Pool;
 
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
 
   async onModuleInit() {
     this.pool = new Pool({
@@ -15,6 +15,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       user: this.configService.get<string>('DB_USERNAME'),
       password: this.configService.get<string>('DB_PASSWORD'),
       database: this.configService.get<string>('DB_DATABASE'),
+      ssl: false
     });
 
     // Test the connection
