@@ -7,7 +7,7 @@ import { REFRESH_TOKEN_EXPIRATION_DAYS } from './constants';
 
 @Injectable()
 export class AuthRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseService) { }
 
   async createUser(registerDto: RegisterDto): Promise<ResponseUserDto> {
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
@@ -17,7 +17,7 @@ export class AuthRepository {
         first_name, 
         last_name, 
         email, 
-        password_hash, 
+        password, 
         phone_number, 
         status
      ) VALUES ($1, $2, $3, $4, $5, $6)

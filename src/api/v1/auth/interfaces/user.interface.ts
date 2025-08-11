@@ -3,7 +3,8 @@ export interface User {
   first_name: string;
   last_name: string;
   email: string;
-  password_hash: string;
+  password: string;
+  role_id?: number;
   created_at: Date;
   updated_at: Date;
   phone_number?: string;
@@ -15,6 +16,7 @@ export interface ResponseUserDto {
   first_name: string;
   last_name: string;
   email: string;
+  role_id?: number;
   created_at: Date;
   updated_at: Date;
 }

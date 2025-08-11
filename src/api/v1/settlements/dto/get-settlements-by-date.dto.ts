@@ -6,6 +6,6 @@ import { PaginationDto } from '../../globalDto/pagination.dto';
 
 export class GetSettlementsByDate extends PaginationDto {
     @IsOptional()
-    @IsIn(['month', 'week', 'year'])
+    @IsIn(['month', 'week', 'year', 'today'])
     group_by?: string;
 }

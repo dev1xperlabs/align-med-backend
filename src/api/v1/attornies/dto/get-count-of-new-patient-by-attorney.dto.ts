@@ -16,8 +16,8 @@ export class GetCountOfNewPatientByAttorney extends PaginationDto {
 
 }
 
-export class GetSumOfNewPatientByAttorneyResponse {
-    getSumOfNewPatientByAttorney: any[];
+export class GetCountOfNewPatientByAttorneyResponse {
+    getCountOfNewPatientByAttorney: any[];
     totalRecords: number;
     currentPage: number;
 }

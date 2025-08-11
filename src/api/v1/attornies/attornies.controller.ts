@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { GetCountOfNewPatientByAttorney } from './dto/get-count-of-new-patient-by-attorney.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ResultDto } from '../globalDto/result.dto';
@@ -17,6 +17,8 @@ export class AttorniesController {
   }
 
   @Post('get-count-of-new-patient-by-attorney')
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.CREATED)
   async getCountOfNewPatientByAttorney(
     @Body() getCountOfNewPatientByAttorney: GetCountOfNewPatientByAttorney
   ): Promise<any> {
@@ -25,6 +27,8 @@ export class AttorniesController {
   }
 
   @Post('get-sum-of-new-patient-by-attorney')
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.CREATED)
   async getSumOfNewPatientByAttorney(
     @Body() getSumtOfNewPatientByAttorney: GetSumtOfNewPatientByAttorney
   ): Promise<any[]> {

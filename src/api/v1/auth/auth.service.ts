@@ -14,11 +14,9 @@ import {
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) { }
+  constructor(private readonly authRepository: AuthRepository) {}
 
   async register(registerDto: RegisterDto): Promise<ResponseUserDto> {
-
-
     const existingUser = await this.authRepository.findUserByEmail(
       registerDto.email,
     );
@@ -29,9 +27,7 @@ export class AuthService {
     return this.authRepository.createUser(registerDto);
   }
 
-  async login(
-    loginDto: LoginDto,
-  ): Promise<{
+  async login(loginDto: LoginDto): Promise<{
     user: ResponseUserDto;
     accessToken: string;
     refreshToken: string;
@@ -56,6 +52,7 @@ export class AuthService {
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
+      role_id: user.role_id,
       created_at: user.created_at,
       updated_at: user.updated_at,
     };
@@ -95,11 +92,12 @@ export class AuthService {
 
   private async validateUser(loginDto: LoginDto): Promise<User | null> {
     const user = await this.authRepository.findUserByEmail(loginDto.email);
+
     if (!user) return null;
 
     const isPasswordValid = await bcrypt.compare(
       loginDto.password,
-      user.password_hash,
+      user.password,
     );
     return isPasswordValid ? user : null;
   }

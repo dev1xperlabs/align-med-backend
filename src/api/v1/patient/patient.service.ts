@@ -3,7 +3,7 @@ import { BaseService } from '../shared/base.service';
 import { PatientRepository } from './patient.repository';
 import { CreatePatientDto, UpdatePatientDto, Patient } from './patient.types';
 import { PatientModel } from './patient.model';
-import { formatDatePlus3Days, transformPatientCounts } from '../utils/helper';
+import { formatDatePlus3Days, isFullYearRange, transformPatientCounts } from '../utils/helper';
 import { GetSumOfNewPatientsByLocation, GetSumOfNewPatientsByLocationResponse } from './dto/get-sum-new-patients-by-location.dto';
 import { GetCountOfNewPatientsByLocation, GetCountOfNewPatientsByLocationResponse } from './dto/get-count-new-patients-by-location.dto';
 import { GetNewPatientsStats } from './dto/get-new-patients-statistics.dto';
@@ -44,12 +44,28 @@ export class PatientService extends BaseService<Patient> {
   async getSumOfNewPatientsByLocation(
     getSumOfNewPatientsByLocation: GetSumOfNewPatientsByLocation
   ): Promise<GetSumOfNewPatientsByLocationResponse[]> {
-    const result = await this.patientRepository.callFunction<any>('get_sum_of_new_patients_by_location', [
-      getSumOfNewPatientsByLocation.page_size,
-      getSumOfNewPatientsByLocation.page_number,
-      getSumOfNewPatientsByLocation.start_date,
-      getSumOfNewPatientsByLocation.end_date,
-    ]);
+
+
+    const isYearRange = isFullYearRange(
+      new Date(getSumOfNewPatientsByLocation?.start_date ?? ''),
+      new Date(getSumOfNewPatientsByLocation?.end_date ?? '')
+    );
+
+
+    const functionName = isYearRange
+      ? 'get_sum_of_billed_charges_by_location_weekly'
+      : 'get_sum_of_billed_charges_by_location_daily';
+
+
+
+    const result = await this.patientRepository.callFunction<any>(
+      functionName,
+      [
+        getSumOfNewPatientsByLocation.start_date,
+        getSumOfNewPatientsByLocation.end_date,
+        getSumOfNewPatientsByLocation.page_size,
+        getSumOfNewPatientsByLocation.page_number,
+      ]);
 
 
     if (!result || result.length === 0) {
@@ -63,11 +79,13 @@ export class PatientService extends BaseService<Patient> {
       ];
     }
 
-    const transformedData = transformPatientCounts(result, true);
+    const responseData = isYearRange ? result[0].get_sum_of_billed_charges_by_location_weekly : result[0].get_sum_of_billed_charges_by_location_daily
+
+    // const transformedData = transformPatientCounts(result, true);
 
     return [{
-      getSumOfNewPatientsByLocation: transformedData,
-      totalRecords: Number(result[0].total_records ?? 0),
+      getSumOfNewPatientsByLocation: responseData?.data,
+      totalRecords: Number(responseData?.totalRecords ?? 0),
       currentPage: Number(getSumOfNewPatientsByLocation.page_number ?? 1),
     }
     ];
@@ -78,13 +96,27 @@ export class PatientService extends BaseService<Patient> {
   async getCountOfNewPatientsByLocation(
     getCountOfNewPatientsByLocation: GetCountOfNewPatientsByLocation
   ): Promise<GetCountOfNewPatientsByLocationResponse[]> {
+
+
+    const isYearRange = isFullYearRange(
+      new Date(getCountOfNewPatientsByLocation?.start_date ?? ''),
+      new Date(getCountOfNewPatientsByLocation?.end_date ?? '')
+    );
+
+
+    const functionName = isYearRange
+      ? 'get_count_of_new_patients_by_location_weekly'
+      : 'get_count_of_new_patients_by_location_daily';
+
+
     const result = await this.patientRepository.callFunction<any>(
-      'get_count_of_new_patients_by_location',
+      functionName,
       [
-        getCountOfNewPatientsByLocation.page_size,
-        getCountOfNewPatientsByLocation.page_number,
         getCountOfNewPatientsByLocation.start_date,
         getCountOfNewPatientsByLocation.end_date,
+        getCountOfNewPatientsByLocation.page_size,
+        getCountOfNewPatientsByLocation.page_number,
+
       ]
     );
 
@@ -98,12 +130,13 @@ export class PatientService extends BaseService<Patient> {
       ];
     }
 
-    const transformedData = transformPatientCounts(result, false);
+
+    const responseData = isYearRange ? result[0].get_count_of_new_patients_by_location_weekly : result[0].get_count_of_new_patients_by_location_daily
 
     return [
       {
-        getCountOfNewPatientsByLocation: transformedData,
-        totalRecords: Number(result[0].total_records ?? 0),
+        getCountOfNewPatientsByLocation: responseData?.data,
+        totalRecords: Number(responseData?.totalRecords ?? 0),
         currentPage: Number(getCountOfNewPatientsByLocation.page_number ?? 1),
       },
     ];

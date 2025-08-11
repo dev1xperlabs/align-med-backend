@@ -13,6 +13,6 @@ import { AuthRepository } from './auth.repository';
   ],
   providers: [AuthService, JwtStrategy, AuthRepository],
   controllers: [AuthController],
-  exports: [JwtStrategy, PassportModule],
+  exports: [JwtStrategy, PassportModule, AuthRepository],
 })
-export class AuthModule {}
+export class AuthModule { }
