@@ -12,9 +12,9 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     this.pool = new Pool({
       host: this.configService.get<string>('DB_HOST'),
       port: this.configService.get<number>('DB_PORT'),
-      user: this.configService.get<string>('DB_USERNAME'),
-      password: this.configService.get<string>('DB_PASSWORD'),
-      database: this.configService.get<string>('DB_DATABASE'),
+      user: this.configService.get<string>('DB_USER'),
+      password: this.configService.get<string>('DB_PASS'),
+      database: this.configService.get<string>('DB_NAME'),
       ssl: {
         rejectUnauthorized: false, // important for Railway / Render / Heroku
       }
