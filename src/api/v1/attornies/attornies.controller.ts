@@ -11,7 +11,9 @@ import { AttorneyDto } from './dto/attorney.dto';
 export class AttorniesController {
   constructor(private readonly attorniesService: AttorniesService) { }
 
-  @Get()
+  @Get('get-all-attorneys')
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.OK)
   async findAll(): Promise<AttorneyDto[]> {
     return this.attorniesService.findAllAttorneys();
   }
@@ -22,7 +24,6 @@ export class AttorniesController {
   async getCountOfNewPatientByAttorney(
     @Body() getCountOfNewPatientByAttorney: GetCountOfNewPatientByAttorney
   ): Promise<any> {
-    console.log('getCountOfNewPatientByAttorney', getCountOfNewPatientByAttorney);
     return this.attorniesService.getCountOfNewPatientByAttorney(getCountOfNewPatientByAttorney);
   }
 

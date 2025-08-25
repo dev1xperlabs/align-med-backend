@@ -3,7 +3,7 @@ import { BaseService } from '../shared/base.service';
 import { PatientRepository } from './patient.repository';
 import { CreatePatientDto, UpdatePatientDto, Patient } from './patient.types';
 import { PatientModel } from './patient.model';
-import { formatDatePlus3Days, isFullYearRange, transformPatientCounts } from '../utils/helper';
+import { formatDatePlus3Days, isFullYearOrMoreThanMonth, isFullYearRange, transformPatientCounts } from '../utils/helper';
 import { GetSumOfNewPatientsByLocation, GetSumOfNewPatientsByLocationResponse } from './dto/get-sum-new-patients-by-location.dto';
 import { GetCountOfNewPatientsByLocation, GetCountOfNewPatientsByLocationResponse } from './dto/get-count-new-patients-by-location.dto';
 import { GetNewPatientsStats } from './dto/get-new-patients-statistics.dto';
@@ -46,11 +46,12 @@ export class PatientService extends BaseService<Patient> {
   ): Promise<GetSumOfNewPatientsByLocationResponse[]> {
 
 
-    const isYearRange = isFullYearRange(
+    const isYearRange = isFullYearOrMoreThanMonth(
       new Date(getSumOfNewPatientsByLocation?.start_date ?? ''),
       new Date(getSumOfNewPatientsByLocation?.end_date ?? '')
     );
 
+    console.log(isYearRange, "options")
 
     const functionName = isYearRange
       ? 'get_sum_of_billed_charges_by_location_weekly'
@@ -98,7 +99,7 @@ export class PatientService extends BaseService<Patient> {
   ): Promise<GetCountOfNewPatientsByLocationResponse[]> {
 
 
-    const isYearRange = isFullYearRange(
+    const isYearRange = isFullYearOrMoreThanMonth(
       new Date(getCountOfNewPatientsByLocation?.start_date ?? ''),
       new Date(getCountOfNewPatientsByLocation?.end_date ?? '')
     );
@@ -147,7 +148,7 @@ export class PatientService extends BaseService<Patient> {
 
 
   async getPatientDataByYearFilter(): Promise<GetNewPatientsStats> {
-    return await this.patientRepository.callFunction<GetNewPatientsStats>('get_new_patient_summary_test', []).then(res => res[0]);
+    return await this.patientRepository.callFunction<GetNewPatientsStats>('get_new_patient_summary', []).then(res => res[0]);
 
   }
 

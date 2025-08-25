@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { AuthRepository } from './auth.repository';
@@ -11,10 +15,21 @@ import {
   JWT_EXPIRATION,
   REFRESH_TOKEN_EXPIRATION_DAYS,
 } from './constants';
+import { ResetPasswordRequestDto } from './dtos/request-reset-password.dto';
+import {
+  JwtPayloadWithUserId,
+  ResetPasswordDto,
+} from './interfaces/reset-password.interface';
+import { UsersRepository } from '../users/users.repository';
+import { ForgetpasswordRepository } from '../forget-password-tokens/forget-password-tokens.repository';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly usersRepository: UsersRepository,
+    private readonly forgetpasswordRepository: ForgetpasswordRepository,
+  ) {}
 
   async register(registerDto: RegisterDto): Promise<ResponseUserDto> {
     const existingUser = await this.authRepository.findUserByEmail(
@@ -64,6 +79,59 @@ export class AuthService {
     };
   }
 
+  async requestPasswordReset(
+    resetPasswordRequestDto: ResetPasswordRequestDto,
+  ): Promise<ResetPasswordRequestDto> {
+    const user = await this.authRepository.findUserByEmail(
+      resetPasswordRequestDto.recoveryEmail,
+    );
+    if (!user) {
+      throw new NotFoundException('No account found with this email');
+    }
+    const token = this.generateAccessToken(user, 1);
+
+    await this.forgetpasswordRepository.createForgetPasswordToken(token);
+
+    return {
+      recoveryEmail: resetPasswordRequestDto.recoveryEmail,
+      message: 'Password reset email sent',
+      acessToken: token,
+    };
+  }
+
+  // ----------------------- Reset passowrd function
+  async resetpassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
+    const { access_token, password } = resetPasswordDto;
+
+    try {
+      const payload = jwt.verify(
+        access_token,
+        JWT_SECRET,
+      ) as JwtPayloadWithUserId;
+
+      const userId = payload?.userId;
+
+      if (!userId) {
+        throw new Error('Invalid token payload: userId missing');
+      }
+
+      const user = await this.usersRepository.findById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      user.password = await bcrypt.hash(password, 10);
+      user.updated_at = new Date();
+
+      console.log(access_token, 'token is auth service');
+      await this.forgetpasswordRepository.deleteTokenByToken(access_token);
+
+      return this.usersRepository.update(user.id, user);
+    } catch (err) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+  }
+
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     const tokenData = await this.authRepository.findRefreshToken(refreshToken);
     if (!tokenData) {
@@ -85,9 +153,12 @@ export class AuthService {
     await this.authRepository.deleteRefreshToken(refreshToken);
   }
 
-  private generateAccessToken(user: User): string {
+  private generateAccessToken(
+    user: User,
+    token_expiration: number = JWT_EXPIRATION,
+  ): string {
     const payload: TokenPayload = { userId: user.id };
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: `${token_expiration}h` });
   }
 
   private async validateUser(loginDto: LoginDto): Promise<User | null> {

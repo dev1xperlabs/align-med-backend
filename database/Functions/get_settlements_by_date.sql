@@ -1,33 +1,51 @@
--- FUNCTION: public.get_settlements_by_date(text, integer, integer)
+-- FUNCTION: public.get_settlements_by_date(text, integer, integer, date, date)
 
--- DROP FUNCTION IF EXISTS public.get_settlements_by_date(text, integer, integer);
+-- DROP FUNCTION IF EXISTS public.get_settlements_by_date(text, integer, integer, date, date);
 
 CREATE OR REPLACE FUNCTION public.get_settlements_by_date(
-	p_group_by text DEFAULT 'month'::text,
-	p_page_size integer DEFAULT 10,
-	p_page_number integer DEFAULT 1)
-    RETURNS TABLE(settlement_date_formatted text, patient_count bigint, total_billed_charges numeric, total_settlement_amount numeric, avg_settlement_percentage numeric, total_records bigint, current_page integer) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-    ROWS 1000
-
+    p_group_by text DEFAULT 'month'::text,
+    p_start_date date DEFAULT NULL,
+    p_end_date date DEFAULT NULL,
+    p_page_size integer DEFAULT 10,
+    p_page_number integer DEFAULT 1
+)
+RETURNS TABLE(
+    settlement_date_formatted text,
+    patient_count bigint,
+    total_billed_charges numeric,
+    total_settlement_amount numeric,
+    avg_settlement_percentage numeric,
+    total_records bigint,
+    current_page integer
+) 
+LANGUAGE 'plpgsql'
+COST 100
+VOLATILE PARALLEL UNSAFE
+ROWS 1000
 AS $BODY$
 BEGIN
     RETURN QUERY
-    WITH grouped_settlements AS (
-        SELECT
-            CASE 
-                WHEN p_group_by = 'week' THEN date_trunc('week', s.settlement_date)
-                WHEN p_group_by = 'year' THEN date_trunc('year', s.settlement_date)
-                ELSE date_trunc('month', s.settlement_date)
-            END AS group_date,
-            s.patient_id,
-            s.total_billed_charges,
-            s.settlement_amount,
-            s.settlement_percentage
+    WITH filtered_settlements AS (
+        SELECT *
         FROM public.settlements s
         WHERE s.status = B'1'
+          AND (p_start_date IS NULL OR s.settlement_date >= p_start_date)
+          AND (p_end_date   IS NULL OR s.settlement_date <= p_end_date)
+    ),
+    grouped_settlements AS (
+        SELECT
+            CASE 
+                WHEN p_group_by = 'week'  THEN date_trunc('week', fs.settlement_date)
+                WHEN p_group_by = 'year'  THEN date_trunc('year', fs.settlement_date)
+                WHEN p_group_by = 'day'   THEN date_trunc('day', fs.settlement_date)
+                WHEN p_group_by = 'today' THEN date_trunc('day', fs.settlement_date)
+                ELSE date_trunc('month', fs.settlement_date)
+            END AS group_date,
+            fs.patient_id,
+            fs.total_billed_charges,
+            fs.settlement_amount,
+            fs.settlement_percentage
+        FROM filtered_settlements fs
     ),
     aggregated AS (
         SELECT
@@ -44,9 +62,11 @@ BEGIN
     )
     SELECT
         CASE 
-            WHEN p_group_by = 'week' THEN TO_CHAR(a.group_date, '"Week "IW, YYYY')
-            WHEN p_group_by = 'year' THEN TO_CHAR(a.group_date, 'YYYY')
-            ELSE TO_CHAR(a.group_date, 'Mon FMDD YYYY')
+            WHEN p_group_by = 'week'  THEN TO_CHAR(a.group_date, '"Week "IW, YYYY')
+            WHEN p_group_by = 'year'  THEN TO_CHAR(a.group_date, 'YYYY')
+            WHEN p_group_by = 'today' THEN TO_CHAR(a.group_date, 'YYYY/MM/DD')
+            WHEN p_group_by = 'day'   THEN TO_CHAR(a.group_date, 'DD/MM/YYYY')
+            ELSE TO_CHAR(a.group_date, 'Mon YYYY')
         END AS settlement_date_formatted,
         a.patient_count,
         a.total_billed_charges,
@@ -62,5 +82,5 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public.get_settlements_by_date(text, integer, integer)
+ALTER FUNCTION public.get_settlements_by_date(text, integer, integer, date, date)
     OWNER TO postgres;

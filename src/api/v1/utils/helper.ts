@@ -155,3 +155,60 @@ export function isFullYearRange(startDate: Date, endDate: Date): boolean {
     return isSameYear && isStartJanFirst;
 }
 
+// export function isFullYearOrMoreThanMonth(startDate: Date, endDate: Date): boolean {
+//     const start = new Date(startDate);
+//     const end = new Date(endDate);
+//     const now = new Date();
+
+//     const isSameYear = start.getUTCFullYear() === end.getUTCFullYear();
+//     const isStartJanFirst = start.getUTCMonth() === 0 && start.getUTCDate() === 1;
+//     const isEndDec31 = end.getUTCMonth() === 11 && end.getUTCDate() === 31;
+
+//     console.log(isStartJanFirst, now, end, "django");
+//     // ✅ Case 1: Current year, Jan 1 -> today
+//     if (
+//         isSameYear &&
+//         start.getUTCFullYear() === now.getUTCFullYear() &&
+//         isStartJanFirst &&
+//         end <= now
+//     ) {
+
+//         console.log("yahan se data aa rha hy ")
+//         return true;
+//     }
+
+//     // ✅ Case 2: Non-current year, Jan 1 -> Dec 31
+//     if (isSameYear && isStartJanFirst && isEndDec31) {
+//         return true;
+//     }
+
+//     // ✅ Case 3: ≤ 30 days but not in the same month
+//     const diffInMs = end.getTime() - start.getTime();
+//     const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+//     if (diffInDays <= 30) {
+//         const isSameMonth =
+//             start.getUTCFullYear() === end.getUTCFullYear() &&
+//             start.getUTCMonth() === end.getUTCMonth();
+//         if (!isSameMonth) {
+//             return true;
+//         }
+//     }
+
+//     // ❌ Otherwise
+//     return false;
+// }
+
+function toLocalDateOnly(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+export function isFullYearOrMoreThanMonth(startDate: Date, endDate: Date): boolean {
+  const start = toLocalDateOnly(new Date(startDate));
+  const end = toLocalDateOnly(new Date(endDate));
+
+  const diffInDays = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+  const monthDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+
+  return diffInDays > 30 || monthDiff >= 1;
+}

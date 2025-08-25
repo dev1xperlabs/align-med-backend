@@ -8,24 +8,22 @@ async function bootstrap() {
 
   // CORS — adjust to your domains
   app.enableCors({
-    origin: ['https://app.alignmedusa.com', 'http://localhost:3000'], // add http://localhost:3000 for local dev
+    origin: [
+      'https://app.alignmedusa.com',
+      'https://align-med-staging.netlify.app',
+      'http://localhost:3000',
+      'https://align-med-frontend.netlify.app',
+    ], // add http://localhost:3000 for local dev
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true, // if you use cookies or send Authorization headers
-    maxAge: 86400,     // cache preflight for a day
+    maxAge: 86400, // cache preflight for a day
   });
 
   const reflector = app.get(Reflector);
-  app.enableCors({
-    origin: '*  ',
-    credentials: true,
-  })
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.listen(process.env.PORT ?? 3001);
   console.log(`Server is running on port ${process.env.PORT ?? 3001}`);
 }
 bootstrap();
-
-
-

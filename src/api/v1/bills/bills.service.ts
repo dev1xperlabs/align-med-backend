@@ -16,6 +16,6 @@ export class BillsService extends BaseService<BillsModel> {
 
 
   async getBillingSummary(): Promise<GetCardsBillsCharges> {
-    return this.billsRepository.callFunction<GetCardsBillsCharges>('get_billing_summary_test', []).then(res => res[0]);
+    return this.billsRepository.callFunction<GetCardsBillsCharges>('get_billing_summary', []).then(res => res[0]);
   }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AttorniesRepository } from './attornies.repository';
 import { AttorniesModel } from './attornies.model';
 import { BaseService } from '../shared/base.service';
-import { formatDatePlus3Days, isFullYearRange, transformAttorneyData } from '../utils/helper';
+import { formatDatePlus3Days, isFullYearOrMoreThanMonth, isFullYearRange, transformAttorneyData } from '../utils/helper';
 import { GetCountOfNewPatientByAttorney, GetCountOfNewPatientByAttorneyResponse } from './dto/get-count-of-new-patient-by-attorney.dto';
 import { GetSumOfNewPatientByAttorneyResponse, GetSumtOfNewPatientByAttorney } from './dto/get-sum-of-new-patient-by-attorney.dto';
 import { promises } from 'dns';
@@ -24,7 +24,7 @@ export class AttorniesService extends BaseService<AttorniesModel> {
   ): Promise<GetSumOfNewPatientByAttorneyResponse[]> {
 
 
-    const isYearRange = isFullYearRange(
+    const isYearRange = isFullYearOrMoreThanMonth(
       new Date(getSumtOfNewPatientByAttorney?.start_date ?? ''),
       new Date(getSumtOfNewPatientByAttorney?.end_date ?? '')
     );
@@ -72,7 +72,7 @@ export class AttorniesService extends BaseService<AttorniesModel> {
     getCountOfNewPatientByAttorney: GetCountOfNewPatientByAttorney
   ): Promise<GetCountOfNewPatientByAttorneyResponse[]> {
 
-    const isYearRange = isFullYearRange(
+    const isYearRange = isFullYearOrMoreThanMonth(
       new Date(getCountOfNewPatientByAttorney?.start_date ?? ''),
       new Date(getCountOfNewPatientByAttorney?.end_date ?? '')
     );

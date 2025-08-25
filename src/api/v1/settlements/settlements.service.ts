@@ -6,7 +6,7 @@ import { SettlementsRepository } from './settlements.repository';
 import { BaseService } from '../shared/base.service';
 import { GetSettlementsByAttorneys } from './dto/get-settlements-by-attorneys.dto';
 import { GetSettlementsStatistics } from './dto/get-settlements-stats.dto';
-import { isFullYearRange, transformAttorneySettlementsData, transformSettlementSummaryData } from '../utils/helper';
+import { isFullYearOrMoreThanMonth, isFullYearRange, transformAttorneySettlementsData, transformSettlementSummaryData } from '../utils/helper';
 
 @Injectable()
 export class SettlementsService extends BaseService<SettlementsModel> {
@@ -20,6 +20,8 @@ export class SettlementsService extends BaseService<SettlementsModel> {
   ): Promise<any[]> {
     const result = await this.settlementsReporsitory.callFunction<any>('get_settlements_by_date', [
       getSettlementsByDate.group_by,
+      getSettlementsByDate.start_date,
+      getSettlementsByDate.end_date,
       getSettlementsByDate.page_size,
       getSettlementsByDate.page_number,
     ])
@@ -50,7 +52,7 @@ export class SettlementsService extends BaseService<SettlementsModel> {
 
   ): Promise<any[]> {
 
-    const isYearRange = isFullYearRange(
+    const isYearRange = isFullYearOrMoreThanMonth(
       new Date(getSettlementsByAttorneys?.start_date ?? ''),
       new Date(getSettlementsByAttorneys?.end_date ?? '')
     );
@@ -93,7 +95,7 @@ export class SettlementsService extends BaseService<SettlementsModel> {
 
 
   async getSettlementsBilling(): Promise<GetSettlementsStatistics> {
-    const result = await this.settlementsReporsitory.callFunction<GetSettlementsStatistics>('get_settlements_billing_test', []);
+    const result = await this.settlementsReporsitory.callFunction<GetSettlementsStatistics>('get_settlements_billing', []);
     return result[0];
   }
 }

@@ -14,13 +14,14 @@ import { RulesModule } from './api/v1/rules/rules.module';
 import { RuleAttorneysMappingModule } from './api/v1/rule-attorneys-mapping/rule-attorneys-mapping.module';
 import { UsersModule } from './api/v1/users/users.module';
 import { RolesModule } from './api/v1/roles/roles.module';
+import { ForgetpasswordModule } from './api/v1/forget-password-tokens/forget-password-tokens.module';
 
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
     envFilePath: '.env'
-  }), DatabaseModule, AuthModule, PatientModule, DoctorModule, AttorniesModule, SettlementsModule, BillsModule, RulesModule, RuleAttorneysMappingModule, UsersModule, RolesModule],
+  }), DatabaseModule, AuthModule, PatientModule, DoctorModule, AttorniesModule, SettlementsModule, BillsModule, RulesModule, RuleAttorneysMappingModule, UsersModule, RolesModule, ForgetpasswordModule],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
 })

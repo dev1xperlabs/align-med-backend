@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Req,
+  HttpException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 
@@ -26,7 +27,7 @@ import { ResultDto } from '../globalDto/result.dto';
 
 @Controller('api/v1/users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(private readonly userService: UsersService) { }
 
   @Post('get-all-users')
   @UseGuards(AuthGuard('jwt'))
@@ -68,12 +69,15 @@ export class UsersController {
         result: user.id,
       });
     } catch (error) {
-      return new ResultDto({
-        statusCode: '500',
-        resultMessage: 'Failed to create User',
-        error: error.name,
-        errorMessage: error.message,
-      });
+      throw new HttpException(
+        new ResultDto({
+          statusCode: '500',
+          resultMessage: 'Failed to create User',
+          error: error.name,
+          errorMessage: error.message,
+        }),
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -89,18 +93,20 @@ export class UsersController {
         result: updateUser.id,
       });
     } catch (error) {
-      console.error('Error updating user:', updateUserDto, error);
-      return new ResultDto({
-        statusCode: '500',
-        resultMessage: 'Failed to update User',
-        error: error.name,
-        errorMessage: error.message,
-      });
+      throw new HttpException(
+        new ResultDto({
+          statusCode: '500',
+          resultMessage: 'Failed to update User',
+          error: error.name,
+          errorMessage: error.message,
+        }),
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   @Put('reset-password')
-  // @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
@@ -111,7 +117,7 @@ export class UsersController {
       return new ResultDto({
         statusCode: '200',
         resultMessage: 'Passwrod reset successfully',
-        result: resetPassword.id,
+        result: resetPassword,
       });
     } catch (error) {
       return new ResultDto({
